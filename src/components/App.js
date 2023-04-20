@@ -1,5 +1,8 @@
-import React, { useState,useReducer } from "react";
+import React, { useState,useReducer, useEffect } from "react";
 import "./../styles/App.css";
+import State from "./State";
+import City from "./City";
+import Landmark from "./Landmark";
 
 
 const states = [{
@@ -141,9 +144,45 @@ const states = [{
 function App() 
 {
 	// Do not alter/remove main div
+	let [stateIndex,setStateIndex]=useState(0);
+	let [cityIndex,setCityIndex]=useState(0);
+	let [landmarkIndex,setLandMarkIndex]=useState(0);
+	let [selectedState,setSelectedState]=useState(states[0]);
+	let [selectedCity,setSelectedCity]=useState(selectedState.city[0]);
+	let [selectedLandmark,setSelectedLandmark]=useState(selectedCity.landmarks[0])
+
+	const handleStateChange=(value)=>{
+		setSelectedState(states[value]);
+		setSelectedCity(states[value].city[0]);
+		setSelectedLandmark(states[value].city[0].landmarks[0]);
+		setStateIndex(value);
+		setCityIndex(0);
+		setLandMarkIndex(0);
+	}
+	const handleCityChange=(value)=>{
+		setSelectedCity(selectedState.city[value]);
+		setSelectedLandmark(selectedState.city[value].landmarks[0])
+		setCityIndex(value);
+		setLandMarkIndex(0);
+	}
+	const handleLandmarkChange=(value)=>{
+		setSelectedLandmark(selectedCity.landmarks[value]);
+		setLandMarkIndex(value);
+	}
 	return (
 	<div id="main">
-		
+		<State states={states} handleStateChange={handleStateChange} stateIndex={stateIndex} />
+		<City cities={selectedState.city} cityIndex={cityIndex} handleCityChange={handleCityChange}/>
+		<Landmark landmarks={selectedCity.landmarks} landmarkIndex={landmarkIndex} handleLandmarkChange={handleLandmarkChange}/>
+		<div id='state-name'>{selectedState.name}</div>
+		<div id='state-description'>{selectedState.description}</div>
+		<div id='state-title'>{selectedState.title}</div>
+		<div id='city-name'>{selectedCity.name}</div>
+		<div id='city-description'>{selectedCity.description}</div>
+		<div id='city-title'>{selectedCity.title}</div>
+		<div id='landmark-name'>{selectedLandmark.name}</div>
+		<div id='landmark-description'>{selectedLandmark.description}</div>
+		<div id='landmark-title'>{selectedLandmark.title}</div>
 	</div>
 	);
 }
